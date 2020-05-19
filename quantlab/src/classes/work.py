@@ -15,44 +15,44 @@ class Work:
 
     def __next__(self):
         line = self.input_file.readline()
-        return self.next(line)
-
-    def next(self, line):
         if line:
-            splitLine = line.strip().split(',')
-            if len(splitLine) != 4:
-                # ignore malformed lines
-                return;
-            timestamp = int(splitLine[0])
-            symbol = splitLine[1]
-            quantity = int(splitLine[2])
-            price = int(splitLine[3])
-            if symbol not in self.stock_dict:
-                column_list = {}
-                if 'max_time_gap' in self.columns:
-                    column_list['max_time_gap'] = (timestamp, 0)
-                if 'total_volume' in self.columns:
-                    column_list['total_volume'] = quantity
-                if 'weighted_avg_price' in self.columns:
-                    column_list['weighted_avg_price'] = (quantity, quantity*price, price)
-                if 'max_trade_price' in self.columns:
-                    column_list['max_trade_price'] = price
-                self.stock_dict[symbol] = column_list
-                self.unsorted_symbols.append(symbol)
-                return column_list
-            else:
-                stock = self.stock_dict[symbol]
-                if 'max_time_gap' in stock:
-                    stock['max_time_gap'] = self.__set_max_time_gap(stock['max_time_gap'], timestamp)
-                if 'total_volume' in stock:
-                    stock['total_volume'] = self.__set_total_volume(stock['total_volume'], quantity)
-                if 'weighted_avg_price' in stock:
-                    stock['weighted_avg_price'] = self.__set_weighted_avg_price(stock['weighted_avg_price'], quantity, quantity*price)
-                if 'max_trade_price' in stock:
-                    stock['max_trade_price'] = self.__set_max_trade_price(stock['max_trade_price'], price)
-                return stock
+            return self.next(line)
         else:
             raise StopIteration()
+
+    def next(self, line):
+        splitLine = line.strip().split(',')
+        if len(splitLine) != 4:
+            # ignore malformed lines
+            return;
+        timestamp = int(splitLine[0])
+        symbol = splitLine[1]
+        quantity = int(splitLine[2])
+        price = int(splitLine[3])
+        if symbol not in self.stock_dict:
+            column_list = {}
+            if 'max_time_gap' in self.columns:
+                column_list['max_time_gap'] = (timestamp, 0)
+            if 'total_volume' in self.columns:
+                column_list['total_volume'] = quantity
+            if 'weighted_avg_price' in self.columns:
+                column_list['weighted_avg_price'] = (quantity, quantity*price, price)
+            if 'max_trade_price' in self.columns:
+                column_list['max_trade_price'] = price
+            self.stock_dict[symbol] = column_list
+            self.unsorted_symbols.append(symbol)
+            return column_list
+        else:
+            stock = self.stock_dict[symbol]
+            if 'max_time_gap' in stock:
+                stock['max_time_gap'] = self.__set_max_time_gap(stock['max_time_gap'], timestamp)
+            if 'total_volume' in stock:
+                stock['total_volume'] = self.__set_total_volume(stock['total_volume'], quantity)
+            if 'weighted_avg_price' in stock:
+                stock['weighted_avg_price'] = self.__set_weighted_avg_price(stock['weighted_avg_price'], quantity, quantity*price)
+            if 'max_trade_price' in stock:
+                stock['max_trade_price'] = self.__set_max_trade_price(stock['max_trade_price'], price)
+            return stock
 
     def __set_max_time_gap(self, max_time_gap_tuple, timestamp):
         earlier_timestamp = max_time_gap_tuple[0]
@@ -60,8 +60,7 @@ class Work:
         time_gap = timestamp-earlier_timestamp
         if time_gap > max_time_gap:
             return (timestamp, time_gap)
-        else:
-            return (timestamp, max_time_gap)
+        return (timestamp, max_time_gap)
 
     def __set_total_volume(self, quantity, add_quantity):
         return add_quantity + quantity
@@ -81,7 +80,7 @@ class Work:
 
     def input(self):
         for line in self:
-            # do nothing
+            #print(line)
             continue
 
     def output(self):
